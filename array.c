@@ -69,22 +69,17 @@ void array_push(array_t array, void *ptr)
 
 void array_pop(array_t array, void *ret)
 {
-    array_t p = array_get(array, array->length - 1);
+    assert(array->length > 0);
+    array->length--;
+    void* p = array_get(array, array->length);
     if (ret && ret != 0x0) {
-        memcpy(ret, p, p->size);
+        memcpy(ret, p, array->size);
     }
     
-    NM_FREE(p);
-}
-
-void array_shift(array_t array, void *ptr)
-{
-    
-}
-
-void* array_unshift(array_t array)
-{
-    return NULL;
+    memset(p, 0, array->size);
+    if (array->length < 0) {
+        array_free(&array);
+    }
 }
 
 void array_map(array_t array, void (*map)(void *ptr))
@@ -111,7 +106,6 @@ void array_walk(array_t array, void *ret, void (*walk)(void *ptr, void *ret))
     }
 }
 
-
 void array_sort(array_t array, int (*cmp)(void const *ptr1, void const *ptr2))
 {
     assert(array);
@@ -121,11 +115,13 @@ void array_sort(array_t array, int (*cmp)(void const *ptr1, void const *ptr2))
 
 int array_length(array_t array)
 {
+    assert(array);
     return array->length;
 }
 
 int array_allocs(array_t array)
 {
+    assert(array);
     return array->allocs;
 }
 
@@ -155,7 +151,20 @@ array_t array_merge(array_t array1, array_t array2)
     return array;
 }
 
+void sum(void *ptr, void* sum)
+{
+    int *t = (int *)sum;
+    *t += *(int *)ptr;
+}
+
+int array_sum(array_t array)
+{
+    int i = 0;
+    array_walk(array, &i, sum);
+    return i;
+}
+
 void array_free(array_t *array)
 {
-    NM_FREE(*array);
+    if (*array && *array != 0x0) NM_FREE(*array);
 }

@@ -26,12 +26,6 @@ int cmp(void const *ptr1, void const *ptr2)
     return *(int *)ptr1 - *(int *)ptr2;
 }
 
-void sum(void *ptr, void* sum)
-{
-    int *t = (int *)sum;
-    *t += *(int *)ptr;
-}
-
 int main(void)
 {
     data dat;
@@ -71,9 +65,12 @@ int main(void)
 
     array_t a3 = array_merge(a1, a2);
     array_sort(a3, cmp);
+    data ret;
+    array_pop(a3, &ret);
+    printf("read = %d\n", ret.uid);
     array_map(a3, dump);
-    int i = 0;
-    array_walk(a3, &i, sum);
+    int i = array_sum(a3);
+    //array_walk(a3, &i, sum);
     printf("i's value = %d.\n", i);
 
     array_free(&a2);
