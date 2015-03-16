@@ -5,6 +5,8 @@
 #ifndef _NIMO_MEM_H_
 #define _NIMO_MEM_H_
 
+#include <stdlib.h>
+
 #define NM_MALLOC(x) malloc(sizeof(x))
 #define NM_CALLOC(z,x) calloc(z, x)
 #define NM_FREE(x) if((x)) free(x);(x)=NULL
